@@ -26,7 +26,7 @@ class TaskController extends Controller
         if (request('status')){
             $query->where('status', request('status'));
         }
-        $tasks = $query->orderBy($sortField)->paginate(10)->onEachSide(1);
+        $tasks = $query->orderBy($sortField, $sortDirection)->paginate(10)->onEachSide(1);
 
         //returning react component with data and filter
         return inertia('Task/Index',[
