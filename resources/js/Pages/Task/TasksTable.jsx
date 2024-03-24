@@ -5,7 +5,7 @@ import {TASK_STATUS_CLASS_MAP, TASK_STATUS_TEXT_MAP} from "@/Constants.jsx";
 import {Link, router} from "@inertiajs/react";
 import Pagination from "@/Components/Pagination.jsx";
 
-export default function TasksTable({tasks, queryParams = null}) {
+export default function TasksTable({tasks, queryParams = null, hideProjectColumn = false}) {
     queryParams = queryParams || {};
     const searchFieldChanged = (name, value) =>{
         if(value){
@@ -52,7 +52,9 @@ export default function TasksTable({tasks, queryParams = null}) {
                             sortChanged={sortChanged}
                         >ID</TableHeadings>
                         <th className='px-3 py-2'>Image</th>
-                        <th className='px-3 py-2'>Project Name</th>
+                        {!hideProjectColumn && (
+                            <th className='px-3 py-2'>Project Name</th>
+                        )}
                         <TableHeadings
                             name='name'
                             sort_field={queryParams.sort_field}
@@ -81,8 +83,10 @@ export default function TasksTable({tasks, queryParams = null}) {
                     <tr className='text-nowrap'>
                         <th className='px-3 py-2'></th>
                         <th className='px-3 py-2'></th>
-                        <th className='px-3 py-2'></th>
-                        <th className='px-3 py-2'>
+                        {!hideProjectColumn && (
+                            <th className='px-3 py-2'></th>
+                        )}
+                            <th className='px-3 py-2'>
                             <TextInput className='w-full'
                                        defualtValue={queryParams.name}
                                        placeholder='Task Name'
@@ -116,7 +120,9 @@ export default function TasksTable({tasks, queryParams = null}) {
                                 <img src={task.image_path} style={{width: 60}}/>
                             </td>
                             <td className='px-3 py-3'>{task.name}</td>
-                            <td className='px-3 py-3'>{task.project.name}</td>
+                            {!hideProjectColumn && (
+                                <td className='px-3 py-3'>{task.project.name}</td>
+                            )}
                             <td className='px-3 py-3 '>
                                             <span
                                                 className={'px-2 py-1 rounded text-white ' + TASK_STATUS_CLASS_MAP[task.status]}>{
