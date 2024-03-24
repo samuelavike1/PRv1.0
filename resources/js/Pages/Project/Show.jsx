@@ -14,7 +14,7 @@ export default function Show({auth, project, tasks, queryParams }){
         >
             <Head title={`Project "${project.name}"`}/>
 
-            <div className="pb-10">
+            <div className="pb-12 pt-2">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                         <div>
