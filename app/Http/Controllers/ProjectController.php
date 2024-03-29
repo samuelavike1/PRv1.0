@@ -29,7 +29,7 @@ class ProjectController extends Controller
         if (request('status')){
             $query->where('status', request('status'));
         }
-        $projects = $query->orderBy($sortField)->paginate(10)->onEachSide(1);
+        $projects = $query->latest()->orderBy($sortField)->paginate(10)->onEachSide(1);
 
         //returning react component with data and filter
         return inertia('Project/Index',[
@@ -110,6 +110,7 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
-        //
+        $project->delete();
+        return to_route('project.index')->with('message', 'Project deleted successfully');
     }
 }
