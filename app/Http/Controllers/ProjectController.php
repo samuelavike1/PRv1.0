@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ProjectResource;
 use App\Http\Resources\TaskResource;
 use App\Models\Project;
-use App\Http\Requests\StoreProjectRequest;
-use App\Http\Requests\UpdateProjectRequest;
+use App\Http\Requests\ProjectRequest;
 use App\Models\Task;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Inertia\Inertia;
 
 class ProjectController extends Controller
 {
@@ -50,7 +51,7 @@ class ProjectController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProjectRequest $request)
+    public function store(ProjectRequest $request)
     {
         $data = $request->validated();
         $image = $data['image'] ?? null;
@@ -94,15 +95,29 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        //
+        return Inertia::render('Project/Edit', [
+            'project'=> new ProjectResource($project)
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProjectRequest $request, Project $project)
+    public function update(ProjectRequest $request, Project $project)
     {
-        //
+        $data = $request->validated();
+
+        $image = $data['image'] ?? null;
+        $data['updated_by'] = auth()->id();
+        if ($image){
+            if ($project->image_path) {
+                Storage::disk('public')->deleteDirectory(dirname($project->image_path));
+            }
+            $data['image_path']=$image -> store('project/'.Str::random(),'public');
+
+        }
+        $project -> update($data);
+        return to_route('project.index')->with('message', 'Project updated successfully');
     }
 
     /**
@@ -111,6 +126,9 @@ class ProjectController extends Controller
     public function destroy(Project $project)
     {
         $project->delete();
+        if ($project->image_path) {
+            Storage::disk('public')->deleteDirectory(dirname($project->image_path));
+        }
         return to_route('project.index')->with('message', 'Project deleted successfully');
     }
 }

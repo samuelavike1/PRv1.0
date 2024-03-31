@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use App\Models\User;
-use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -13,7 +15,27 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $query = User::query();
+        $sortField = request('sort_field','created_at');
+        $sortDirection = request('sort_direction', 'desc');
+
+
+        //Filter
+        if (request('name')){
+            $query -> where('name','like','%'. request('name').'%');
+        }
+        if (request('email')){
+            $query -> where('email','like','%'. request('email').'%');
+        }
+
+        $users = $query->latest()->orderBy($sortField)->paginate(10)->onEachSide(1);
+
+        //returning react component with data and filter
+        return inertia('User/Index',[
+            'users'=> UserResource::collection($users),
+            'queryParams'=>request()->query()? : null,
+            'message'=>session('message'),
+        ]);
     }
 
     /**
@@ -21,15 +43,19 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        return inertia('User/Create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreUserRequest $request)
+    public function store(UserRequest $request)
     {
-        //
+        $data = $request->validated();
+        $data['email_verified_at'] = time();
+        User::create($data);
+
+        return to_route('user.index')->with('message', 'User created successfully');
     }
 
     /**
@@ -45,7 +71,9 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        //
+        return inertia('User/Edit', [
+            'user' => new UserResource($user),
+        ]);
     }
 
     /**
@@ -53,7 +81,15 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
-        //
+        $data = $request->validated();
+        $password = $data['password'] ?? null;
+        if (!($password)) {
+            unset($data['password']);
+        }
+
+        $user->update($data);
+
+        return to_route('user.index')->with('message', 'User updated successfully');
     }
 
     /**
@@ -61,6 +97,8 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        $user->delete();
+
+        return to_route('user.index')->with('message', 'User deleted successfully');
     }
 }
