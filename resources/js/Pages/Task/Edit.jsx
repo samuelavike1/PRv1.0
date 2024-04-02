@@ -5,29 +5,28 @@ import TextInput from "@/Components/TextInput.jsx";
 import InputError from "@/Components/InputError.jsx";
 import TextAreaInput from "@/Components/TextAreaInput.jsx";
 import SelectInput from "@/Components/SelectInput.jsx";
-import ParentLayout from "@/Layouts/ParentLayout.jsx";
 
 
-const Create = ({auth, project} ) => {
+export default function Create({auth, task} ) {
     const {data, setData,post ,errors,reset} = useForm({
         image: '',
-        name: project.name || '',
-        status: project.status || '',
-        description: project.description || '',
-        due_date: project.due_date || '',
+        name: task.name || '',
+        status: task.status || '',
+        description: task.description || '',
+        due_date: task.due_date || '',
         _method: 'PUT',
     })
 
     const onSubmit = (e) => {
         e.preventDefault();
-        post(route('project.update', project.id))
+        post(route('task.update', task.id))
     }
     return (
         <Authenticated
             user={auth.user}
             header={
                 <div className='flex justify-between items-center'>
-                    <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Edit Project "{project.name}"</h2>
+                    <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Edit Project "{task.name}"</h2>
                 </div>
             }>
             <Head title="Create Project"/>
@@ -37,17 +36,17 @@ const Create = ({auth, project} ) => {
 
                         <form onSubmit={onSubmit} className='p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg'>
                             <div>
-                                {project.image_path &&
+                                {task.image_path &&
                                     <div className='mb-4'>
-                                        <img src={project.image_path} className='w-20' />
+                                        <img src={task.image_path} className='w-20' />
                                     </div>
                                 }
                                 <InputLabel
-                                    htmlFor='project_image_path'
+                                    htmlFor='task_image_path'
                                     value='Project Image'
                                 />
                                 <TextInput
-                                    id='project_image_path'
+                                    id='task_image_path'
                                     type='file'
                                     name='image'
                                     className='mt-1 block w-full'
@@ -58,11 +57,11 @@ const Create = ({auth, project} ) => {
                             </div>
                             <div className='mt-4'>
                                 <InputLabel
-                                    htmlFor='project_name'
+                                    htmlFor='task_name'
                                     value='Project Name'
                                 />
                                 <TextInput
-                                    id='project_name'
+                                    id='task_name'
                                     type='text'
                                     name='name'
                                     value={data.name}
@@ -75,11 +74,11 @@ const Create = ({auth, project} ) => {
                             </div>
                             <div className='mt-4'>
                                 <InputLabel
-                                    htmlFor='project_description'
+                                    htmlFor='task_description'
                                     value='Project Description'
                                 />
                                 <TextAreaInput
-                                    id='project_description'
+                                    id='task_description'
                                     name='description'
                                     value={data.description}
                                     className='mt-1 block w-full'
@@ -90,11 +89,11 @@ const Create = ({auth, project} ) => {
                             </div>
                             <div className='mt-4'>
                                 <InputLabel
-                                    htmlFor='project_due_date'
+                                    htmlFor='task_due_date'
                                     value='Due Date'
                                 />
                                 <TextInput
-                                    id='project_due_date'
+                                    id='task_due_date'
                                     type='date'
                                     name='due_date'
                                     value={data.due_date}
@@ -106,11 +105,11 @@ const Create = ({auth, project} ) => {
                             </div>
                             <div className='mt-4'>
                                 <InputLabel
-                                    htmlFor='project_status'
+                                    htmlFor='task_status'
                                     value='Project Status'
                                 />
                                 <SelectInput
-                                    id='project_status'
+                                    id='task_status'
                                     name='status'
                                      className='mt-1 block w-full'
                                     onChange={e => setData('status', e.target.value)}
@@ -124,7 +123,7 @@ const Create = ({auth, project} ) => {
                             </div>
                             <div className='mt-4 text-right'>
                                 <Link
-                                    href={route('project.index')}
+                                    href={route('task.index')}
                                     className='bg-gray-100 py-1 px-3 text-gray-800 rounded shadow transition-all hover:bg-gray-200 mr-2'
                                 >Cancel</Link>
                                 <button className='bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:border-r-emerald-600'>Submit</button>
@@ -138,7 +137,3 @@ const Create = ({auth, project} ) => {
         </Authenticated>
     )
 }
-
-Create.layout = (page) => <ParentLayout children={page}/>
-
-export default Create;

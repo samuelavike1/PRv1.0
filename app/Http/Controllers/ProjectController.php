@@ -36,7 +36,7 @@ class ProjectController extends Controller
         return inertia('Project/Index',[
             'projects'=> ProjectResource::collection($projects),
             'queryParams'=>request()->query()? : null,
-            'message'=>session('message'),
+//            'message'=>session('message'),
         ]);
     }
 
@@ -63,7 +63,7 @@ class ProjectController extends Controller
         }
         Project::create($data);
 
-        return to_route('project.index')->with('message', 'Project created successfully');
+        return to_route('project.index')->with('success_message', 'Project created successfully');
     }
 
     /**
@@ -129,6 +129,6 @@ class ProjectController extends Controller
         if ($project->image_path) {
             Storage::disk('public')->deleteDirectory(dirname($project->image_path));
         }
-        return to_route('project.index')->with('message', 'Project deleted successfully');
+        return to_route('project.index')->with('success_message', 'Project deleted successfully');
     }
 }

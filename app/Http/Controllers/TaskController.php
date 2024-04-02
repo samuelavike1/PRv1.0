@@ -2,10 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ProjectResource;
 use App\Http\Resources\TaskResource;
+use App\Http\Resources\UserResource;
+use App\Models\Project;
 use App\Models\Task;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
+use App\Models\User;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Inertia\Inertia;
+use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
@@ -38,9 +46,14 @@ class TaskController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create($project_id)
     {
-        //
+        $project = Project::find($project_id);
+        $users = User::all();
+        return inertia('Task/Create',[
+            'users' => UserResource::collection($users),
+            'project'=>new ProjectResource($project)
+        ]);
     }
 
     /**
@@ -48,7 +61,29 @@ class TaskController extends Controller
      */
     public function store(StoreTaskRequest $request)
     {
-        //
+//       return redirect()->back()->with('success_message', 'Task created successfully');
+//        return redirect()->back()->with('error_message', 'Task not created successfully');
+        try {
+            $data = $request->validated();
+//            $image = $data['image'] ?? null;
+            $data['created_by'] = auth()->id();
+            $data['updated_by'] = auth()->id();
+//            if ($image){
+//                $data['image_path']=$image -> store('task/'.Str::random(),'public');
+//
+//            }
+            $newTask = Task::create($data);
+
+            if ($newTask)
+            {
+                return redirect()->back()->with('success_message', 'Task created successfully');
+            }
+            return redirect()->back()->with('error_message', 'Task not created');
+
+        }catch (\Exception $e) {
+
+            return to_route('project.show')->with('error_message', 'Task creation failed');
+        }
     }
 
     /**
@@ -56,7 +91,23 @@ class TaskController extends Controller
      */
     public function show(Task $task)
     {
-        //
+        $query = $task->tasks();
+        $sortField = request('sort_field','created_at');
+        $sortDirection = request('sort_direction', 'desc');
+
+        if (request('name')){
+            $query -> where('name','like','%'. request('name').'%');
+        }
+        if (request('status')){
+            $query->where('status', request('status'));
+        }
+        $tasks=$query->orderBy($sortField, $sortDirection)->paginate(10)->onEachSide(1);
+
+        return inertia('Task/Show',[
+            'task'=>new TaskResource($task),
+            'tasks'=> TaskResource::collection($tasks),
+            'queryParams'=>request()->query()? : null,
+        ]);
     }
 
     /**
@@ -64,7 +115,9 @@ class TaskController extends Controller
      */
     public function edit(Task $task)
     {
-        //
+        return Inertia::render('Task/Edit', [
+            'task'=> new TaskResource($task)
+        ]);
     }
 
     /**
@@ -72,7 +125,19 @@ class TaskController extends Controller
      */
     public function update(UpdateTaskRequest $request, Task $task)
     {
-        //
+        $data = $request->validated();
+
+        $image = $data['image'] ?? null;
+        $data['updated_by'] = auth()->id();
+        if ($image){
+            if ($task->image_path) {
+                Storage::disk('public')->deleteDirectory(dirname($task->image_path));
+            }
+            $data['image_path']=$image -> store('task/'.Str::random(),'public');
+
+        }
+        $task -> update($data);
+        return to_route('task.index')->with('message', 'Task updated successfully');
     }
 
     /**
@@ -80,6 +145,10 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-        //
+        $task->delete();
+        if ($task->image_path) {
+            Storage::disk('public')->deleteDirectory(dirname($task->image_path));
+        }
+        return to_route('task.index')->with('message', 'Task deleted successfully');
     }
 }

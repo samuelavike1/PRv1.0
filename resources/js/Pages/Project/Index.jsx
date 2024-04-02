@@ -5,8 +5,10 @@ import {PROJECT_STATUS_CLASS_MAP, PROJECT_STATUS_TEXT_MAP} from "@/Constants.jsx
 import TextInput from "@/Components/TextInput.jsx";
 import SelectInput from "@/Components/SelectInput.jsx";
 import TableHeadings from "@/Components/TableHeadings.jsx";
+import ParentLayout from "@/Layouts/ParentLayout.jsx";
+import Create from "@/Pages/Task/Create.jsx";
 
-export default function index({auth, projects, queryParams=null, message }){
+const index = ({auth, projects, queryParams=null})=>{
     queryParams = queryParams || {}
     const searchFieldChanged = (name, value) =>{
         if(value){
@@ -59,11 +61,11 @@ export default function index({auth, projects, queryParams=null, message }){
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    {message && (
-                        <div className='bg-emerald-500 py-2 px-4 text-white rounded mb-4'>
-                            {message}
-                        </div>
-                    )}
+                    {/*{message && (*/}
+                    {/*    <div className='bg-emerald-500 py-2 px-4 text-white rounded mb-4'>*/}
+                    {/*        {message}*/}
+                    {/*    </div>*/}
+                    {/*)}*/}
                 <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                         <div className="p-6 text-gray-900 dark:text-gray-100">
                             <div className='overflow-auto'>
@@ -180,3 +182,6 @@ export default function index({auth, projects, queryParams=null, message }){
         </Authenticated>
     )
 }
+index.layout = (page) => <ParentLayout children={page}/>
+
+export default index;
