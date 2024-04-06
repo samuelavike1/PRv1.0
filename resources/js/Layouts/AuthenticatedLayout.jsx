@@ -33,6 +33,9 @@ const Authenticated = ({ user, header, children }) => {
                                 <NavLink href={route('user.index')} active={route().current('user.index')}>
                                     Users
                                 </NavLink>
+                                <NavLink href={route('my-tasks')} active={route().current('my-task')}>
+                                    My Tasks
+                                </NavLink>
                             </div>
                         </div>
 

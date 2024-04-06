@@ -18,12 +18,12 @@ export const TASK_STATUS_TEXT_MAP = {
     'in_progress': 'In Progress',
     'completed': 'Completed',
 }
-export const TASK_PRIORITY_STATUS_CLASS_MAP = {
+export const TASK_PRIORITY_CLASS_MAP = {
     'low': 'bg-gray-600',
     'medium': 'bg-amber-600',
     'high': 'bg-red-600',
 }
-export const TASK_PRIORITY_STATUS_TEXT_MAP = {
+export const TASK_PRIORITY_TEXT_MAP = {
     'low': 'Low',
     'medium': 'Medium',
     'high': 'High',

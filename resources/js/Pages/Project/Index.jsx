@@ -144,7 +144,7 @@ const index = ({auth, projects, queryParams=null})=>{
                                             </td>
                                             <td className='px-3 py-3'>
                                                 <Link href={route('project.show', project.id)}
-                                                      className=' text-white text-nowrap hover:underline hover:text-blue-500'>
+                                                      className=' dark:text-white text-nowrap hover:underline hover:text-blue-500'>
                                                     {project.name}
                                                 </Link>
                                             </td>

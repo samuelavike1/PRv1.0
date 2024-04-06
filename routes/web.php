@@ -27,15 +27,18 @@ Route::get('/', function () {
 
 
 Route::middleware(['auth','verified'])->group(function (){
-    Route::get('/dashboard', fn () =>Inertia::render('Dashboard'))->name('dashboard');
+//    Route::get('/dashboard', fn () =>Inertia::render('Dashboard'))->name('dashboard');
+    Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('project', \App\Http\Controllers\ProjectController::class);
     Route::resource('task', \App\Http\Controllers\TaskController::class);
     Route::resource('user', \App\Http\Controllers\UserController::class);
     Route::resource('test', \App\Http\Controllers\TestController::class);
+    Route::get('my-tasks',[\App\Http\Controllers\TaskController::class, 'mytasks'])->name('my-tasks');
 
     Route::get('create-task/{project_id}', [\App\Http\Controllers\TaskController::class, 'create'])->name('create-task');
     Route::get('delete-task/{task}', [\App\Http\Controllers\TaskController::class, 'destroy'])->name('delete-task');
+//    Route::get('show-task/{task}', [\App\Http\Controllers\TaskController::class, 'show'])->name('show-task');
 
 });
 

@@ -59,16 +59,17 @@ export default function TasksTable({tasks, queryParams = null, hideProjectColumn
                             sort_direction={queryParams.sort_direction}
                             sortChanged={sortChanged}
                         >ID</TableHeadings>
-                        <th className='px-3 py-2'>Image</th>
-                        {!hideProjectColumn && (
-                            <th className='px-3 py-2'>Project Name</th>
-                        )}
+
                         <TableHeadings
                             name='name'
                             sort_field={queryParams.sort_field}
                             sort_direction={queryParams.sort_direction}
                             sortChanged={sortChanged}
-                        >Name</TableHeadings>
+                        >Task Title</TableHeadings>
+                        <th className='px-3 py-2'>Assign To</th>
+                        {!hideProjectColumn && (
+                            <th className='px-3 py-2'>Project Name</th>
+                        )}
                         <TableHeadings
                             name='status'
                             sort_field={queryParams.sort_field}
@@ -90,11 +91,8 @@ export default function TasksTable({tasks, queryParams = null, hideProjectColumn
                         className='text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500'>
                     <tr className='text-nowrap'>
                         <th className='px-3 py-2'></th>
-                        <th className='px-3 py-2'></th>
-                        {!hideProjectColumn && (
-                            <th className='px-3 py-2'></th>
-                        )}
-                            <th className='px-3 py-2'>
+
+                        <th className='px-3 py-2'>
                             <TextInput className='w-full'
                                        defualtValue={queryParams.name}
                                        placeholder='Task Name'
@@ -102,6 +100,10 @@ export default function TasksTable({tasks, queryParams = null, hideProjectColumn
                                        onKeyPress={e => onKeyPress('name', e)}
                             />
                         </th>
+                        <th className='px-3 py-2'></th>
+                        {!hideProjectColumn && (
+                            <th className='px-3 py-2'></th>
+                        )}
                         <th className='px-3 py-2'>
                             <SelectInput className='w-full'
                                          onChange={(e) => searchFieldChanged('status', e.target.value)}
@@ -115,7 +117,7 @@ export default function TasksTable({tasks, queryParams = null, hideProjectColumn
                         </th>
                         <th className='px-3 py-2'></th>
                         <th className='px-3 py-2'></th>
-                        <th className='px-3 py-2'></th>
+                        <th className='px-3 py-2 '></th>
                         <th className='px-3 py-2'></th>
                     </tr>
                     </thead>
@@ -124,10 +126,14 @@ export default function TasksTable({tasks, queryParams = null, hideProjectColumn
                         <tr className='bg-white border-b dark:bg-gray-800 dark:border-gray-700'
                             key={task.id}>
                             <td className='px-3 py-3'>{task.id}</td>
+
                             <td className='px-3 py-3'>
-                                <img src={task.image_path} style={{width: 60}}/>
+                                <Link href={route('task.show', task.id)}
+                                      className=' dark:text-white text-nowrap hover:underline hover:text-blue-500'>
+                                    {task.name}
+                                </Link>
                             </td>
-                            <td className='px-3 py-3'>{task.name}</td>
+                            <td className='px-3 py-3'>{task.assignedTo.name}</td>
                             {!hideProjectColumn && (
                                 <td className='px-3 py-3'>{task.project.name}</td>
                             )}
@@ -139,13 +145,14 @@ export default function TasksTable({tasks, queryParams = null, hideProjectColumn
                             </td>
                             <td className='px-3 py-3'>{task.created_at}</td>
                             <td className='px-3 py-3'>{task.due_date}</td>
-                            <td className='px-3 py-3'>{task.createdBy.name}</td>
+                            <td className='px-3 py-3 text-nowrap'>{task.createdBy.name}</td>
                             <td className='px-3 py-3'>
                                 <Link href={route('task.edit', task.id)}
                                       className='font-medium text-blue-600 dark:text-blue-500 hover:underline mx-1'>
                                     Edit
                                 </Link>
-                                <Link href={route('delete-task', task.id)} className='font-medium text-red-600 dark:text-red-500 hover:underline mx-1'>
+                                <Link href={route('delete-task', task.id)}
+                                      className='font-medium text-red-600 dark:text-red-500 hover:underline mx-1'>
                                     Delete
                                 </Link>
                             </td>
