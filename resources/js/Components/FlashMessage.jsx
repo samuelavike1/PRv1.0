@@ -3,8 +3,8 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const FlashMessage = ({ message, type }) => {
 
-    // console.log('message: ', message);
-    // console.log('type: ', type);
+    console.log('message: ', message);
+    console.log('type: ', type);
     if (type === 'success') {
         toast.success(message, {
             position: 'top-center',

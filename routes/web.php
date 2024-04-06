@@ -35,6 +35,7 @@ Route::middleware(['auth','verified'])->group(function (){
     Route::resource('test', \App\Http\Controllers\TestController::class);
 
     Route::get('create-task/{project_id}', [\App\Http\Controllers\TaskController::class, 'create'])->name('create-task');
+    Route::get('delete-task/{task}', [\App\Http\Controllers\TaskController::class, 'destroy'])->name('delete-task');
 
 });
 

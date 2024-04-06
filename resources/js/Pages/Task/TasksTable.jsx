@@ -37,8 +37,16 @@ export default function TasksTable({tasks, queryParams = null, hideProjectColumn
         }
         router.get(route('task.index'), queryParams);
     };
+    // const DeleteProject = (task) => {
+    //     if(!window.confirm('Are you sure you want to delete this project?')) {
+    //         return;
+    //     }
+    //     router.delete(route('task.destroy',task.id))
+    // };
+
     return(
         <>
+
             <div className='overflow-auto'>
                 <table
                     className='w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400'>
@@ -137,8 +145,7 @@ export default function TasksTable({tasks, queryParams = null, hideProjectColumn
                                       className='font-medium text-blue-600 dark:text-blue-500 hover:underline mx-1'>
                                     Edit
                                 </Link>
-                                <Link href={route('task.destroy', task.id)}
-                                      className='font-medium text-red-600 dark:text-red-500 hover:underline mx-1'>
+                                <Link href={route('delete-task', task.id)} className='font-medium text-red-600 dark:text-red-500 hover:underline mx-1'>
                                     Delete
                                 </Link>
                             </td>

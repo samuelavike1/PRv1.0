@@ -1,8 +1,10 @@
 import Authenticated from "@/Layouts/AuthenticatedLayout.jsx";
 import {Head} from "@inertiajs/react";
 import TasksTable from "@/Pages/Task/TasksTable.jsx";
+import ParentLayout from "@/Layouts/ParentLayout.jsx";
+import Create from "@/Pages/Task/Create.jsx";
 
-export default function index({auth, tasks, queryParams=null}){
+const index = ({auth, tasks, queryParams=null}) =>{
     queryParams = queryParams || {}
 
 
@@ -25,3 +27,6 @@ export default function index({auth, tasks, queryParams=null}){
         </Authenticated>
     )
 }
+index.layout = (page) => <ParentLayout children={page}/>
+
+export default index;

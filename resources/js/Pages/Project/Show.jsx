@@ -2,8 +2,10 @@ import Authenticated from "@/Layouts/AuthenticatedLayout.jsx";
 import {Head, Link} from "@inertiajs/react";
 import {PROJECT_STATUS_CLASS_MAP, PROJECT_STATUS_TEXT_MAP} from "@/Constants.jsx";
 import TasksTable from "@/Pages/Task/TasksTable.jsx";
+import ParentLayout from "@/Layouts/ParentLayout.jsx";
+import Create from "@/Pages/Task/Create.jsx";
 
-export default function Show({auth, project, tasks, queryParams }){
+const Show = ({auth, project, tasks, queryParams })=>{
 
     return (
         <Authenticated
@@ -84,8 +86,8 @@ export default function Show({auth, project, tasks, queryParams }){
                                 <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Project Tasks</h2>
                                 {/*<Link href={route('task.create',project.id)}*/}
                                 <Link href={route('create-task',project.id)}
-                                      className='bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-600'>Add
-                                    New</Link>
+                                      className='bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-600'>Add New
+                                </Link>
                             </div>
                             <TasksTable tasks={tasks} queryParams={queryParams} hideProjectColumn={true}/>
                         </div>
@@ -96,3 +98,8 @@ export default function Show({auth, project, tasks, queryParams }){
         </Authenticated>
     )
 }
+
+Show.layout = (page) => <ParentLayout children={page}/>
+
+export default Show;
+
