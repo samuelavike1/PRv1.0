@@ -55,7 +55,7 @@ class UserController extends Controller
         $data['email_verified_at'] = time();
         User::create($data);
 
-        return to_route('user.index')->with('message', 'User created successfully');
+        return to_route('user.index')->with('success_message', 'User created successfully');
     }
 
     /**
@@ -89,7 +89,7 @@ class UserController extends Controller
 
         $user->update($data);
 
-        return to_route('user.index')->with('message', 'User updated successfully');
+        return to_route('user.index')->with('success_message', 'User updated successfully');
     }
 
     /**
@@ -99,6 +99,6 @@ class UserController extends Controller
     {
         $user->delete();
 
-        return to_route('user.index')->with('message', 'User deleted successfully');
+        return to_route('user.index')->with('success_message', 'User deleted successfully');
     }
 }
