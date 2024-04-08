@@ -43,3 +43,7 @@ Route::middleware('auth')->group(function () {
 
 Route::get('mail',[\App\Http\Controllers\MailController::class,'SendMail']);
 require __DIR__.'/auth.php';
+
+Route::get('test-me', function () {
+    return env('APP_URL');
+});
