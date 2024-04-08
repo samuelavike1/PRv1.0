@@ -3,7 +3,8 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+        <link rel="icon" type="image/svg+xml" href="/icon.ico" />
+
 
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
