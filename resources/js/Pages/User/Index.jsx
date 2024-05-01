@@ -1,11 +1,18 @@
 import Authenticated from "@/Layouts/AuthenticatedLayout.jsx";
-import {Head, Link, router} from "@inertiajs/react";
+import {Head, Link, router, useForm} from "@inertiajs/react";
 import Pagination from "@/Components/Pagination.jsx";
 import TextInput from "@/Components/TextInput.jsx";
 import TableHeadings from "@/Components/TableHeadings.jsx";
 import ParentLayout from "@/Layouts/ParentLayout.jsx";
+import {useState} from "react";
+import Modal from "@/Components/Modal.jsx";
+import InputLabel from "@/Components/InputLabel.jsx";
+import InputError from "@/Components/InputError.jsx";
+import SecondaryButton from "@/Components/SecondaryButton.jsx";
+import DangerButton from "@/Components/DangerButton.jsx";
 
 const index = ({auth, users, queryParams=null, message }) =>{
+
     queryParams = queryParams || {}
     const searchFieldChanged = (name, value) =>{
         if(value){
@@ -45,13 +52,37 @@ const index = ({auth, users, queryParams=null, message }) =>{
         router.delete(route('user.destroy',user.id))
     }
 
+    const {data, setData,post:store,errors,reset} = useForm({
+        name: '',
+        email: '',
+        password: '',
+        password_confirmation: '',
+    })
+    const [confirmingUserStoreModal, setConfirmingUserStoreModal] = useState(false)
+    const confirmUserStoreModal = () => setConfirmingUserStoreModal(true);
+    const closeStoreModal = () => setConfirmingUserStoreModal(false);
+
+    const storeUser = (e) => {
+        e.preventDefault();
+
+        store(route('user.store'), {
+            preserveScroll: true,
+            onSuccess: () => setConfirmingUserStoreModal(false),
+            onFinish: () => reset(),
+        });
+    }
+
+
     return(
+        <>
         <Authenticated
             user={auth.user}
             header={
                 <div className='flex justify-between items-center'>
                     <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Users</h2>
-                    <Link href={route('user.create')} className='bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-600'>Add New</Link>
+                    <button onClick={confirmUserStoreModal}
+                          // href={route('user.create')}
+                          className='bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-600'>Add New</button>
                 </div>
             }>
             <Head title="Users"/>
@@ -142,8 +173,90 @@ const index = ({auth, users, queryParams=null, message }) =>{
                     </div>
                 </div>
             </div>
-
         </Authenticated>
+            <Modal show={confirmingUserStoreModal} onClose={closeStoreModal}>
+                <form onSubmit={storeUser} className="p-6">
+                    <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                        Create a new User
+                    </h2>
+
+                    <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+
+                    </p>
+
+                    <div className='mt-4'>
+                        <InputLabel
+                            htmlFor='user_name'
+                            value='User Name'
+                        />
+                        <TextInput
+                            id='user_name'
+                            type='text'
+                            name='name'
+                            value={data.name}
+                            className='mt-1 block w-full'
+                            isFocused={true}
+                            onChange={e => setData('name', e.target.value)}
+                        />
+                        <InputError message={errors.name} className='mt-2'/>
+                    </div>
+                    <div className='mt-4'>
+                        <InputLabel
+                            htmlFor='user_email'
+                            value='Email'
+                        />
+                        <TextInput
+                            id='user_email'
+                            type='email'
+                            name='email'
+                            value={data.email}
+                            className='mt-1 block w-full'
+                            onChange={e => setData('email', e.target.value)}
+                        />
+                        <InputError message={errors.email} className='mt-2'/>
+                    </div>
+                    <div className='mt-4'>
+                        <InputLabel
+                            htmlFor='user_password'
+                            value='Password'
+                        />
+                        <TextInput
+                            id='user_password'
+                            type='password'
+                            name='password'
+                            value={data.password}
+                            className='mt-1 block w-full'
+                            onChange={e => setData('password', e.target.value)}
+                        />
+                        <InputError message={errors.password} className='mt-2'/>
+                    </div>
+                    <div className='mt-4'>
+                        <InputLabel
+                            htmlFor='user_password_confirmation'
+                            value='Confirm Password'
+                        />
+                        <TextInput
+                            id='user_password_confirmation'
+                            type='password'
+                            name='password_confirmation'
+                            value={data.password_confirmation}
+                            className='mt-1 block w-full'
+                            onChange={e => setData('password_confirmation', e.target.value)}
+                        />
+                        <InputError message={errors.password_confirmation} className='mt-2'/>
+                    </div>
+
+
+                    <div className="mt-6 flex justify-end">
+                        <SecondaryButton onClick={closeStoreModal}>Cancel</SecondaryButton>
+
+                        <DangerButton className="ms-3 bg-green-600 focus:ring-green-500 hover:bg-green-500 active:bg-green-700" >
+                            Delete Account
+                        </DangerButton>
+                    </div>
+                </form>
+            </Modal>
+        </>
     )
 }
 index.layout = (page) => <ParentLayout children={page}/>
